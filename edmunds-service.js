@@ -43,9 +43,14 @@ angular.module('edmundsApi')
       },
       getMakes: function(year) {
         type = 'makes';
+        var obj = {
+          year: year || null,
+        };
+
+        var string = stringBuilder(obj);
 
         var delay = $q.defer();
-        $http.get(edmundUrl + type + '/?fmt=json&api_key=' + key, {
+        $http.get(edmundUrl + type + '/?fmt=json&api_key=' + key + string, {
             cache: true
           })
           .success(function(data) {
@@ -54,14 +59,19 @@ angular.module('edmundsApi')
 
         return delay.promise;
       },
-      getModels: function(make) {
-        if(!make) {
+      getModels: function(make, year) {
+        if (!make) {
           return;
         }
         type = 'models';
+        var obj = {
+          year: year || null,
+        };
+
+        var string = stringBuilder(obj);
 
         var delay = $q.defer();
-        $http.get(edmundUrl + make + '/' + type + '/?fmt=json&api_key=' + key, {
+        $http.get(edmundUrl + make + '/' + type + '/?fmt=json&api_key=' + key + string, {
             cache: true
           })
           .success(function(data) {
@@ -81,5 +91,15 @@ angular.module('edmundsApi')
         }
       }
       return vinSquished;
+    }
+
+    function stringBuilder(obj) {
+      var queryString = '';
+      for (var prop in obj) {
+        if (obj[prop] !== null) {
+          queryString += '&' + prop + '=' + obj[prop];
+        }
+      }
+      return queryString;
     }
   });
