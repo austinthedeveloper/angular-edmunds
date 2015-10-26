@@ -11,7 +11,9 @@ angular.module('edmundsApi')
         type = 'vins';
 
         var delay = $q.defer();
-        $http.get(edmundUrl + type + '/' + vin + '/?fmt=json&api_key=' + key, {cache: true})
+        $http.get(edmundUrl + type + '/' + vin + '/?fmt=json&api_key=' + key, {
+            cache: true
+          })
           .success(function(data) {
             delay.resolve(data);
           });
@@ -38,9 +40,39 @@ angular.module('edmundsApi')
           });
 
         return delay.promise;
+      },
+      getMakes: function(year) {
+        type = 'makes';
+
+        var delay = $q.defer();
+        $http.get(edmundUrl + type + '/?fmt=json&api_key=' + key, {
+            cache: true
+          })
+          .success(function(data) {
+            delay.resolve(data);
+          });
+
+        return delay.promise;
+      },
+      getModels: function(make) {
+        if(!make) {
+          return;
+        }
+        type = 'models';
+
+        var delay = $q.defer();
+        $http.get(edmundUrl + make + '/' + type + '/?fmt=json&api_key=' + key, {
+            cache: true
+          })
+          .success(function(data) {
+            delay.resolve(data);
+          });
+
+        return delay.promise;
       }
     };
-    function shortenVin(vin){
+
+    function shortenVin(vin) {
       var vinSquished = '';
 
       for (var i = 0; i < vin.length; i++) {

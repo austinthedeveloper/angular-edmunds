@@ -10,6 +10,8 @@ A collection of services that pull from the [Edmunds API](http://developer.edmun
 * [Edmunds API Key](http://developer.edmunds.com/api-documentation/overview/index.html)
 
 ##Installation
+* Open the `edmunds-service.js` and edit this line with your API key:
+    - `var key = API_KEY`
 * Include `edmundsApi` in your module:
 `angular.module('myApp', ['edmundsApi']);`
 * Inject `edmundsService` into your controllers/directives/etc.
