@@ -8,17 +8,22 @@ angular.module('edmundsApi')
 
     return {
       get: function(vin) {
-        type = 'squishvins';
-        var vinSquished = '';
-
-        for (var i = 0; i < vin.length; i++) {
-          if (i <= 10 && i !== 8) {
-            vinSquished += vin.charAt(i);
-          }
-        }
+        type = 'vins';
 
         var delay = $q.defer();
-        $http.get(edmundUrl + type + '/' + vinSquished + '/?fmt=json&api_key=' + key)
+        $http.get(edmundUrl + type + '/' + vin + '/?fmt=json&api_key=' + key, {cache: true})
+          .success(function(data) {
+            delay.resolve(data);
+          });
+
+        return delay.promise;
+      },
+      getShortVin: function(vin) {
+        type = 'squishvins';
+        var shortenedVin = shortenVin(vin);
+
+        var delay = $q.defer();
+        $http.get(edmundUrl + type + '/' + shortenedVin + '/?fmt=json&api_key=' + key)
           .success(function(data) {
             delay.resolve(data);
           });
@@ -27,7 +32,7 @@ angular.module('edmundsApi')
       },
       getPicture: function(make, model, year) {
         var delay = $q.defer();
-        $http.get(mediaUrl + 'nissan/altima/2014/photos?api_key=' + key + '&fmt=json')
+        $http.get(mediaUrl + make + '/' + model + '/' + year + '/photos?api_key=' + key + '&fmt=json')
           .success(function(data) {
             delay.resolve(data);
           });
@@ -35,15 +40,14 @@ angular.module('edmundsApi')
         return delay.promise;
       }
     };
-  })
-  .directive('getVin', function(vinService) {
-    return {
-      templateUrl: 'vin-list.html',
-      link: function($scope, elem, attrs) {
-        var vin = attrs.getVin;
-        vinService.get(vin).then(function(data) {
-          $scope.data = data;
-        });
+    function shortenVin(vin){
+      var vinSquished = '';
+
+      for (var i = 0; i < vin.length; i++) {
+        if (i <= 10 && i !== 8) {
+          vinSquished += vin.charAt(i);
+        }
       }
-    };
+      return vinSquished;
+    }
   });
