@@ -31,5 +31,15 @@ $scope.vinLookup = function() {
 
 ##Services
 * `getVin(vin)`: Get vehicle information based on the Vin given
+    - `vin`: Required. Full 17-code VIN.
 * `getShortVin(shortVin)`: Same as getVin but accepts the shortened version of the VIN. It will do the shortening for you.
+    - `shortVin`: Required. Pass in the full 17-code VIN and it will shorten the VIN for you.
 * `getPicture(make, model, year)`: Gets pictures based on the Make, Model, and Year. 
+    - `make`: Required. Takes the `niceName` version of the Make.
+    - `model`: Required. Takes the `niceName` version of the Model.
+    - `year`: Required. 4-letter version of year.
+* `getMakes(year)`: Get all car Makes. 
+    - `year`: Optional. Pass this value in to get Makes only from that year.
+* `getModels(make, year)`: Get all Models for a Make
+    - `make`: Required. Takes the `niceName` version of the Make.
+    - `year`: Optional. Pass this value in to get Models only from that year.
