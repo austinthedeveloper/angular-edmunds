@@ -1,6 +1,6 @@
 angular.module('edmundsApi', []);
 angular.module('edmundsApi')
-  .factory('vinService', function($http, $q) {
+  .factory('edmundsService', function($http, $q) {
     var key = API_KEY,
       edmundUrl = 'https://api.edmunds.com/api/vehicle/v2/',
       mediaUrl = 'https://api.edmunds.com/api/media/v2/',
