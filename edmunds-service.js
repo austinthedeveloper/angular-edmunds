@@ -4,15 +4,20 @@ angular.module('edmundsApi')
     var key = API_KEY,
       edmundUrl = 'https://api.edmunds.com/api/vehicle/v2/',
       mediaUrl = 'https://api.edmunds.com/api/media/v2/',
-      type = '';
+      type = '',
+      params = {
+        fmt: "json",
+        api_key: key
+      };
 
     return {
       get: function(vin) {
         type = 'vins';
 
         var delay = $q.defer();
-        $http.get(edmundUrl + type + '/' + vin + '/?fmt=json&api_key=' + key, {
-            cache: true
+        $http.get(edmundUrl + type + '/' + vin, {
+            cache: true,
+            params: params
           })
           .success(function(data) {
             delay.resolve(data);
@@ -25,7 +30,7 @@ angular.module('edmundsApi')
         var shortenedVin = shortenVin(vin);
 
         var delay = $q.defer();
-        $http.get(edmundUrl + type + '/' + shortenedVin + '/?fmt=json&api_key=' + key)
+        $http.get(edmundUrl + type + '/' + shortenedVin, {params: params})
           .success(function(data) {
             delay.resolve(data);
           });
@@ -34,7 +39,11 @@ angular.module('edmundsApi')
       },
       getPicture: function(make, model, year) {
         var delay = $q.defer();
-        $http.get(mediaUrl + make + '/' + model + '/' + year + '/photos?api_key=' + key + '&fmt=json')
+        params.make = make || null;
+        params.model = model || null;
+        params.year = year || null;
+        
+        $http.get(mediaUrl + make + '/' + model + '/' + year + '/photos', {params: params})
           .success(function(data) {
             delay.resolve(data);
           });
@@ -43,15 +52,12 @@ angular.module('edmundsApi')
       },
       getMakes: function(year) {
         type = 'makes';
-        var obj = {
-          year: year || null,
-        };
-
-        var string = stringBuilder(obj);
+        params.year = year || null;
 
         var delay = $q.defer();
-        $http.get(edmundUrl + type + '/?fmt=json&api_key=' + key + string, {
-            cache: true
+        $http.get(edmundUrl + type, {
+            cache: true,
+            params: params
           })
           .success(function(data) {
             delay.resolve(data);
@@ -64,15 +70,12 @@ angular.module('edmundsApi')
           return;
         }
         type = 'models';
-        var obj = {
-          year: year || null,
-        };
-
-        var string = stringBuilder(obj);
+        params.year = year || null;
 
         var delay = $q.defer();
-        $http.get(edmundUrl + make + '/' + type + '/?fmt=json&api_key=' + key + string, {
-            cache: true
+        $http.get(edmundUrl + make + '/' + type, {
+            cache: true,
+            params: params
           })
           .success(function(data) {
             delay.resolve(data);
@@ -91,15 +94,5 @@ angular.module('edmundsApi')
         }
       }
       return vinSquished;
-    }
-
-    function stringBuilder(obj) {
-      var queryString = '';
-      for (var prop in obj) {
-        if (obj[prop] !== null) {
-          queryString += '&' + prop + '=' + obj[prop];
-        }
-      }
-      return queryString;
     }
   });
